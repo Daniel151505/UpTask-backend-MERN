@@ -67,7 +67,7 @@ const confirmar = async (req, res) => {
   const usuarioConfirmar = await Usuario.findOne({ token });
 
   if (!usuarioConfirmar) {
-    const error = new Error("Token no válido");
+    const error = new Error("Invalid token");
     return res.status(403).json({ msg: error.message });
   }
 
@@ -75,7 +75,7 @@ const confirmar = async (req, res) => {
     usuarioConfirmar.confirmado = true;
     usuarioConfirmar.token = "";
     await usuarioConfirmar.save();
-    res.json({ msg: "Usuario confirmado correctamente" });
+    res.json({ msg: "Successfully Confirmed User" });
   } catch (error) {
     console.log(error);
   }
