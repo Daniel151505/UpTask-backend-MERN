@@ -1,6 +1,7 @@
 import Usuario from "../models/Usuario.js";
 import generarId from "../helpers/generarId.js";
 import generarJWT from "../helpers/generarJWT.js";
+import { emailRegister } from "../helpers/email.js";
 
 const registrar = async (req, res) => {
   //Evitar registros duplicados
@@ -16,7 +17,17 @@ const registrar = async (req, res) => {
     const usuario = new Usuario(req.body);
     usuario.token = generarId();
     await usuario.save();
-    res.json({ msg: "User Created Successfully, check your email to confirm your account" });
+
+    // Send email confirmation
+    emailRegister({
+      email: usuario.email,
+      nombre: usuario.nombre,
+      token: usuario.token,
+    });
+
+    res.json({
+      msg: "User Created Successfully, check your email to confirm your account",
+    });
   } catch (error) {
     console.log(error);
   }
