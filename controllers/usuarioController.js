@@ -101,7 +101,7 @@ const olvidePassword = async (req, res) => {
       token: usuario.token,
     })
 
-    res.json({ msg: "Hemos enviado un email con las instrucciones" });
+    res.json({ msg: "We have sent an email with instructions" });
   } catch (error) {
     console.log(error);
   }
@@ -112,9 +112,9 @@ const comprobarToken = async (req, res) => {
   const tokenValido = await Usuario.findOne({ token });
 
   if (tokenValido) {
-    res.json({ msg: "Token válido y el Usuario existe" });
+    res.json({ msg: "Valid token and User exists" });
   } else {
-    const error = new Error("Token no válido");
+    const error = new Error("Invalid Token");
     return res.status(404).json({ msg: error.message });
   }
 };
@@ -131,12 +131,12 @@ const nuevoPassword = async (req, res) => {
 
     try {
       await usuario.save();
-      res.json({ msg: "Password modificado correctamente" });
+      res.json({ msg: "Password successfully modified" });
     } catch (error) {
       console.log(error);
     }
   } else {
-    const error = new Error("Token no válido");
+    const error = new Error("Invalid Token");
     return res.status(404).json({ msg: error.message });
   }
 };
