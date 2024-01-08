@@ -5,6 +5,7 @@ import {
   obtenerProyecto,
   editarProyecto,
   eliminarProyecto,
+  searchCollaborator,
   agregarColaborador,
   eliminarColaborador,
 } from "../controllers/proyectoController.js";
@@ -23,7 +24,8 @@ router
   .put(checkAuth, editarProyecto)
   .delete(checkAuth, eliminarProyecto);
 
-router.post("/agregar-colaborador/:id", checkAuth, agregarColaborador);
-router.post("/eliminar-colaborador/:id", checkAuth, eliminarColaborador);
+router.post("/collaborators", checkAuth, searchCollaborator)
+router.post("/collaborators/:id", checkAuth, agregarColaborador);
+router.delete("/collaborators/:id", checkAuth, eliminarColaborador);
 
 export default router;
