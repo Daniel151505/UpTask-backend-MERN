@@ -102,7 +102,46 @@ const searchCollaborator = async (req, res) => {
   res.json(user);
 };
 
-const agregarColaborador = async (req, res) => {};
+const agregarColaborador = async (req, res) => {
+  const project = await Proyecto.findById(req.params.id);
+
+  if (!project) {
+    const error = new Error("Project Not Found");
+    return res.status(404).json({msg: error.message})
+  }
+
+  if (project.creador.toString() !== req.usuario._id.toString()) {
+    const error = new Error("Invalid Action");
+    return res.status(404).json({msg: error.message})
+  }
+
+  const { email } = req.body;
+  const user = await Usuario.findOne({ email }).select(
+    "-confirmado -createdAt -password -token -updatedAt -__v "
+  );
+
+  if (!user) {
+    const error = new Error("User not found");
+    return res.status(404).json({ msg: error.message });
+  }
+
+  // The collaborator is not the admin of the project
+  if(project.creador.toString() === user._id.toString()) {
+    const error = new Error("The project creator cannot be a collaborator");
+    return res.status(404).json({msg: error.message})
+  }
+
+  // Check that it is not already added to the project
+  if(project.colaboradores.includes(user._id)) {
+    const error = new Error("The user already belongs to the project");
+    return res.status(404).json({msg: error.message})
+  }
+
+  // Is Ok, can be added
+  project.colaboradores.push(user._id)
+  await project.save()
+  res.json({msg: "Collaborator Added Successfully"})
+};
 
 const eliminarColaborador = async (req, res) => {};
 
