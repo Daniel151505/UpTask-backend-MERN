@@ -1,55 +1,50 @@
 import nodemailer from "nodemailer";
 
-export const emailRegister = async (data) => {
-  const { email, nombre, token } = data;
+export const emailRegistro = async (datos) => {
+  const { email, nombre, token } = datos;
 
   const transport = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
+    port: parseInt(process.env.EMAIL_PORT),
+    secure: false,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
   });
 
-  // Email information
-
-  await transport.sendMail({
-    from: '"UpTask - Project Manager" <accounts@uptask.com>', 
-    to: email, 
-    subject: "Check Your Account", 
-    text: "Check Your Account on UpTask",
-    html: `
-        <p>Hello: ${nombre}, Check your account on UpTask </p>
-        <a href="${process.env.FRONTEND_URL}/confirm-account/${token}">Check Account</a>
-        <p> If you did not create this account, you can ignore the message </p>
-    `
-  })
+const info = await transport.sendMail({
+  from: '"UpTask - Project Manager" <accounts@uptask.com>',
+  to: email,
+  subject: "UpTask - Check your account",
+  html: `<p>Hello ${nombre},</p>
+  <p>Your account is almost ready, you just have to check it at the following link:</p>
+  <p><a href="${process.env.FRONTEND_URL}/confirm/${token}">Check Account</a></p>
+  <p>If you did not create this account, you can ignore this message.</p>`,
+  });
 };
 
-export const emailForgotPassword = async (data) => {
-  const { email, nombre, token } = data;
+export const emailOlvidePassword = async (datos) => {
+  const { email, nombre, token } = datos;
 
   const transport = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
+    port: parseInt(process.env.EMAIL_PORT),
+    secure: false,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
   });
 
-  // Email information
-
-  await transport.sendMail({
-    from: '"UpTask - Project Manager" <accounts@uptask.com>', 
-    to: email, 
-    subject: "Reset your Password now", 
-    text: "Reset your password",
-    html: `
-        <p>Hello: ${nombre}, follow the following link to generate a new password</p>
-        <a href="${process.env.FRONTEND_URL}/forgot-password/${token}">Reset password</a>
-        <p> If you did not request the change, you can ignore the message </p>
-    `
-  })
+  // Información del email
+const info = await transport.sendMail({
+  from: '"UpTask - Project Manager" <accounts@uptask.com>',
+  to: email,
+  subject: "UpTask - Reset your Password",
+  html: `<p>Hello ${nombre},</p>
+  <p>You have requested to reset your password. Follow the following link to generate a new one:</p>
+  <p><a href="${process.env.FRONTEND_URL}/forgot-password/${token}">Reset Password</a></p>
+  <p>If you did not request this change, you can ignore this message.</p>`,
+  });
 };

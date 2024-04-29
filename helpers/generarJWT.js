@@ -5,5 +5,4 @@ const generarJWT = (id) => {
     expiresIn: "30d",
   });
 };
-
 export default generarJWT;

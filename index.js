@@ -13,30 +13,68 @@ dotenv.config();
 
 conectarDB();
 
-// Configure Cors
-const whiteList = [process.env.FRONTEND_URL];
+// Configurar CORS
+const whitelist = [process.env.FRONTEND_URL];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whiteList.includes(origin)) {
-      // Can check the API
+    if (whitelist.includes(origin)) {
+      // Puede consultar la API
       callback(null, true);
     } else {
-      //It's not allowed
-      callback(new Error("Cors Error"));
+      // No esta permitido
+      callback(new Error("Error de Cors"));
     }
   },
 };
 
 app.use(cors(corsOptions));
 
-//Routing
-app.use("/api/usuarios", usuarioRoutes);
-app.use("/api/proyectos", proyectoRoutes);
-app.use("/api/tareas", tareaRoutes);
+// Routing
+app.use("/api/users", usuarioRoutes);
+app.use("/api/projects", proyectoRoutes);
+app.use("/api/tasks", tareaRoutes);
 
 const PORT = process.env.PORT || 4000;
+const servidor = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
-app.listen(4000, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+// Socket.io
+import { Server } from "socket.io";
+
+const io = new Server(servidor, {
+  pingTimeout: 60000,
+  cors: {
+    origin: process.env.FRONTEND_URL,
+  },
+});
+
+io.on("connection", (socket) => {
+  // console.log("Conectado a socket.io");
+
+  // Definir los eventos de socket io
+  socket.on("abrir proyecto", (proyecto) => {
+    socket.join(proyecto);
+  });
+
+  socket.on("nueva tarea", (tarea) => {
+    const proyecto = tarea.proyecto;
+    socket.to(proyecto).emit("tarea agregada", tarea);
+  });
+
+  socket.on("eliminar tarea", (tarea) => {
+    const proyecto = tarea.proyecto;
+    socket.to(proyecto).emit("tarea eliminada", tarea);
+  });
+
+  socket.on("actualizar tarea", (tarea) => {
+    const proyecto = tarea.proyecto._id;
+    socket.to(proyecto).emit("tarea actualizada", tarea);
+  });
+
+  socket.on("cambiar estado", (tarea) => {
+    const proyecto = tarea.proyecto._id;
+    socket.to(proyecto).emit("nuevo estado", tarea);
+  });
 });

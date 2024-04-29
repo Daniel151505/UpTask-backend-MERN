@@ -31,7 +31,6 @@ const usuarioSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
 usuarioSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();

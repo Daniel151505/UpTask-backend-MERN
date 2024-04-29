@@ -24,11 +24,16 @@ const tareaSchema = mongoose.Schema(
     prioridad: {
       type: String,
       required: true,
-      enum: ["Low", "Medium", "High"],
+      enum: ["Low", "Mid", "High"],
     },
     proyecto: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Proyecto",
+    },
+    completado: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Usuario",
+      default: null,
     },
   },
   {

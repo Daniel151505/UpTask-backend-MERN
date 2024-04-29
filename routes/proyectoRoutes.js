@@ -1,11 +1,12 @@
 import express from "express";
+
 import {
   obtenerProyectos,
   nuevoProyecto,
   obtenerProyecto,
   editarProyecto,
   eliminarProyecto,
-  searchCollaborator,
+  buscarColaborador,
   agregarColaborador,
   eliminarColaborador,
 } from "../controllers/proyectoController.js";
@@ -24,8 +25,8 @@ router
   .put(checkAuth, editarProyecto)
   .delete(checkAuth, eliminarProyecto);
 
-router.post("/collaborators", checkAuth, searchCollaborator)
+router.post("/collaborators", checkAuth, buscarColaborador);
 router.post("/collaborators/:id", checkAuth, agregarColaborador);
-router.delete("/deleted-collaborator/:id", checkAuth, eliminarColaborador);
+router.post("/delete-collaborator/:id", checkAuth, eliminarColaborador);
 
 export default router;
