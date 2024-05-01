@@ -30,7 +30,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Routing
+// Routing 
 app.use("/api/users", usuarioRoutes);
 app.use("/api/projects", proyectoRoutes);
 app.use("/api/tasks", tareaRoutes);
